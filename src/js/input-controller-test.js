@@ -15,29 +15,55 @@ const actionsB = {
   jump: { keys: [32], enabled: false },
 };
 
-// let testBlock = document.querySelector(".test");
-let testBlock = document.body;
+let testBlock = document.querySelector(".test_block");
+let left = 200
+testBlock.style.left= left + "px";
 
-let controller = new inputController(actionsA, testBlock);
+let controller = new inputController(actionsA, document);
+let action;
 
-// window.addEventListener("keydown", (e) => {
-//   controller.enableAction();
+// window.addEventListener("input-controller:action-activated",(e)=>{
+//   console.log(e)
+// })
+window.addEventListener("left", () => {
+  const startMove = setInterval(()=>{
+    left -= 5 
+  testBlock.style.left= left + "px"
+  },30)
+  window.addEventListener("input-controller:action-deactivated",(e)=>{
+    clearInterval(startMove)
+  })
+})
 
-// if (controller.isActionActive("left")) {
-//   console.log("move left");
-// }
-// if (controller.isActionActive("right")) {
-//   console.log("move right");
-// }
-// if (controller.isActionActive("up")) {
-//   console.log("move up");
-// }
-// if (controller.isActionActive("down")) {
-//   console.log("move down");
-// }
-// if (controller.isActionActive("jump")) {
-//   console.log("jump");
-// }
-// });
+window.addEventListener("right", () => {
+  const startMove = setInterval(()=>{
+    left += 5 
+  testBlock.style.left= left + "px"
+  },30)
+  window.addEventListener("input-controller:action-deactivated",(e)=>{
+    clearInterval(startMove)
+  })
+})
+
+window.addEventListener("up", () => {
+  const startMove = setInterval(()=>{
+    left -= 5 
+  testBlock.style.left= left + "px"
+  },30)
+  window.addEventListener("input-controller:action-deactivated",(e)=>{
+    clearInterval(startMove)
+  })
+})
+
+window.addEventListener("down", () => {
+  const startMove = setInterval(()=>{
+    left -= 5 
+  testBlock.style.left= left + "px"
+  },30)
+  window.addEventListener("input-controller:action-deactivated",(e)=>{
+    clearInterval(startMove)
+  })
+})
+
 
 // controller.bindActions(actionsB);

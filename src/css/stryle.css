@@ -1,10 +1,14 @@
 .test {
+  position:relative;
   width: 500px;
   height: 500px;
   background-color: aliceblue;
 }
 
 .test_block {
+  position:absolute;
+  /* top:200px; */
+  /* left:200px; */
   width: 100px;
   height: 100px;
   background-color: teal;
