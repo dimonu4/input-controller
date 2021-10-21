@@ -58,12 +58,13 @@ class inputController {
   }
 
   enableAction(actionName) {
+    if (this.isActionActive(actionName)) {
+      return;
+    }
     if (this.focused) {
       this.actionsToBind[actionName].enabled = true;
-      if (this.isActionActive(actionName)) {
-        let event = new Event(actionName);
-        window.dispatchEvent(event);
-      }
+      let event = new Event(actionName);
+      window.dispatchEvent(event);
     }
   }
 
