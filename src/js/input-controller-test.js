@@ -23,14 +23,31 @@ testBlock.style.top = topCoordinate + "px";
 
 let controller = new inputController(actionsA, document);
 
+let buttonAttach = document.querySelector(".btnAttach");
+buttonAttach.addEventListener("click", () => {
+  controller.attach(controller.target, !controller.enabled);
+});
+let buttonDetach = document.querySelector(".btnDetach");
+buttonDetach.addEventListener("click", () => {
+  controller.detach();
+});
+
+let buttonActivate = document.querySelector(".btnActivate");
+buttonActivate.addEventListener("click", () => {
+  controller.enabled = true;
+});
+let buttonDeactivate = document.querySelector(".btnDeactivate");
+buttonDeactivate.addEventListener("click", () => {
+  controller.enabled = false;
+});
+
 let addJumpButton = document.querySelector(".btnAddJump");
 addJumpButton.addEventListener("click", () => {
   controller.bindActions(actionsB);
 });
-// window.addEventListener("input-controller:action-activated",(e)=>{
-//   console.log(e)
-// })
+
 window.addEventListener("left", () => {
+  console.log(controller.isKeyPressed(65));
   const startMove = setInterval(() => {
     left -= 5;
     testBlock.style.left = left + "px";

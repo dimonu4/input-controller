@@ -1,9 +1,12 @@
 "use strict";
 class inputController {
-  enabled;
   focused;
   ACTION_ACTIVATED = "input-controller:action-activated";
   ACTION_DEACTIVATED = "input-controller:action-deactivated";
+  controllers = {
+    keys: "keyBoardController",
+    mouse: "mouseController",
+  };
 
   constructor(actionsToBind, target) {
     this.actionsToBind = actionsToBind;
@@ -16,42 +19,35 @@ class inputController {
     testArea.addEventListener("blur", () => {
       this.focused = false;
     });
-
-    let buttonAttach = this.target.querySelector(".btnAttach");
-    buttonAttach.addEventListener("click", () => {
-      this.attach(this.target, !this.enabled);
-    });
-    let buttonDetach = this.target.querySelector(".btnDetach");
-    buttonDetach.addEventListener("click", () => {
-      this.detach();
-    });
-
-    let buttonActivate = this.target.querySelector(".btnActivate");
-    buttonActivate.addEventListener("click", () => {
-      this.enabled = true;
-    });
-    let buttonDeactivate = this.target.querySelector(".btnDeactivate");
-    buttonDeactivate.addEventListener("click", () => {
-      this.enabled = false;
-      this.detach();
-    });
+    this.chooseController();
   }
 
-  keydownHandler = (e) => {
+  chooseController() {
+    // console.log(Object.values(this.controllers).indexOf("mouse"));
+    let keywords = [];
     for (let action in this.actionsToBind) {
-      if (this.actionsToBind[action].keys.includes(e.keyCode)) {
-        this.enableAction(action);
+      {
+        keywords.push(Object.keys(this.actionsToBind[action])[0]);
       }
     }
-  };
+    for (let keyword of keywords) {
+      if (keyword in this.controllers) {
+        console.log(this.controllers[keyword]);
+      }
+    }
+    console.log(keywords);
+  }
 
-  keyupHandler = (e) => {
-    for (let action in this.actionsToBind) {
-      if (this.actionsToBind[action].keys.includes(e.keyCode)) {
-        this.disableAction(action);
-      }
+  set enabled(value) {
+    this._enabled = value;
+    if (!this.enabled) {
+      this.detach();
     }
-  };
+  }
+
+  get enabled() {
+    return this._enabled;
+  }
 
   bindActions(actionsToBind) {
     this.actionsToBind = actionsToBind;
@@ -74,6 +70,26 @@ class inputController {
     window.dispatchEvent(event);
   }
 
+  isActionActive(action) {
+    return !!this.actionsToBind[action].enabled;
+  }
+
+  keydownHandler = (e) => {
+    for (let action in this.actionsToBind) {
+      if (this.actionsToBind[action].keys.includes(e.keyCode)) {
+        this.enableAction(action);
+      }
+    }
+  };
+
+  keyupHandler = (e) => {
+    for (let action in this.actionsToBind) {
+      if (this.actionsToBind[action].keys.includes(e.keyCode)) {
+        this.disableAction(action);
+      }
+    }
+  };
+
   attach(target, dontUnable) {
     if (dontUnable) {
       return;
@@ -87,17 +103,20 @@ class inputController {
     this.target.removeEventListener("keyup", this.keyupHandler);
   }
 
-  isActionActive(action) {
-    if (this.actionsToBind[action].enabled === true) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   isKeyPressed(keyCode) {
-    if (window.event.keyCode === keyCode) {
-      return true;
-    }
+    return window.event.keyCode === keyCode;
+  }
+}
+
+class PluginControllers {
+  constructor(actionsToBind, target) {
+    this.actionToBind = actionsToBind;
+    this.target = target;
+  }
+}
+class keyBoardController extends PluginControllers {
+  constructor(actionsToBind, target) {
+    super(actionsToBind, target);
+    console.log("created keyboard controller");
   }
 }
