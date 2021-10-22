@@ -25,29 +25,28 @@ let controller = new inputController(actionsA, document);
 
 let buttonAttach = document.querySelector(".btnAttach");
 buttonAttach.addEventListener("click", () => {
-  controller.attach(controller.target, !controller.enabled);
+  controller.keyboard.attach(controller.target, !controller.keyboard.enabled);
 });
 let buttonDetach = document.querySelector(".btnDetach");
 buttonDetach.addEventListener("click", () => {
-  controller.detach();
+  controller.keyboard.detach();
 });
 
 let buttonActivate = document.querySelector(".btnActivate");
 buttonActivate.addEventListener("click", () => {
-  controller.enabled = true;
+  controller.keyboard.enabled = true;
 });
 let buttonDeactivate = document.querySelector(".btnDeactivate");
 buttonDeactivate.addEventListener("click", () => {
-  controller.enabled = false;
+  controller.keyboard.enabled = false;
 });
 
 let addJumpButton = document.querySelector(".btnAddJump");
 addJumpButton.addEventListener("click", () => {
-  controller.bindActions(actionsB);
+  controller.keyboard.bindActions(actionsB);
 });
 
 window.addEventListener("left", () => {
-  console.log(controller.isKeyPressed(65));
   const startMove = setInterval(() => {
     left -= 5;
     testBlock.style.left = left + "px";
