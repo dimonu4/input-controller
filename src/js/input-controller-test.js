@@ -25,25 +25,25 @@ let controller = new inputController(actionsA, document);
 
 let buttonAttach = document.querySelector(".btnAttach");
 buttonAttach.addEventListener("click", () => {
-  controller.keyboard.attach(controller.target, !controller.keyboard.enabled);
+  controller.attach(controller.target, !controller.keyboard.enabled);
 });
 let buttonDetach = document.querySelector(".btnDetach");
 buttonDetach.addEventListener("click", () => {
-  controller.keyboard.detach();
+  controller.detach();
 });
 
 let buttonActivate = document.querySelector(".btnActivate");
 buttonActivate.addEventListener("click", () => {
-  controller.keyboard.enabled = true;
+  controller.enabled(true);
 });
 let buttonDeactivate = document.querySelector(".btnDeactivate");
 buttonDeactivate.addEventListener("click", () => {
-  controller.keyboard.enabled = false;
+  controller.enabled(false);
 });
 
 let addJumpButton = document.querySelector(".btnAddJump");
 addJumpButton.addEventListener("click", () => {
-  controller.keyboard.bindActions(actionsB);
+  controller.bindActions(actionsB);
 });
 
 window.addEventListener("left", () => {

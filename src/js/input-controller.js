@@ -1,6 +1,7 @@
 "use strict";
 class inputController {
   keyboard;
+  focused;
   controllers = {
     keys: () => {
       this.keyboard = new KeyBoardController(this.actionsToBind, this.target);
@@ -26,22 +27,34 @@ class inputController {
       }
     }
   }
+
+  attach(target, dontUnable) {
+    this.keyboard.attach(target, dontUnable);
+  }
+
+  detach() {
+    this.keyboard.detach();
+  }
+
+  enabled(bool) {
+    this.keyboard.enabled = bool;
+
+    this.keyboard.focused((isfocus) => {
+      this.keyBoardFocused = isfocus;
+    });
+  }
+
+  bindActions(actionsToBind) {
+    this.keyboard.actionsToBind = actionsToBind;
+  }
 }
 
 class PluginControllers {
-  focused;
   ACTION_DEACTIVATED = "input-controller:action-deactivated";
 
   constructor(actionsToBind, target) {
     this.actionsToBind = actionsToBind;
     this.target = target;
-    const testArea = this.target.querySelector(".test");
-    testArea.addEventListener("focus", () => {
-      this.focused = true;
-    });
-    testArea.addEventListener("blur", () => {
-      this.focused = false;
-    });
   }
 
   set enabled(value) {
@@ -81,8 +94,22 @@ class PluginControllers {
   }
 }
 class KeyBoardController extends PluginControllers {
+  _key = [];
   constructor(actionsToBind, target) {
     super(actionsToBind, target);
+  }
+
+  focused(callback) {
+    const testArea = this.target.querySelector(".test");
+
+    testArea.addEventListener("focus", () => {
+      this.focused = true;
+      callback(this.focused);
+    });
+    testArea.addEventListener("blur", () => {
+      this.focused = false;
+      callback(this.focused);
+    });
   }
 
   attach(target, dontUnable) {
@@ -99,6 +126,7 @@ class KeyBoardController extends PluginControllers {
   }
 
   keydownHandler = (e) => {
+    this._key.push(window.event.keyCode);
     for (let action in this.actionsToBind) {
       if (this.actionsToBind[action].keys.includes(e.keyCode)) {
         this.enableAction(action);
@@ -107,6 +135,7 @@ class KeyBoardController extends PluginControllers {
   };
 
   keyupHandler = (e) => {
+    this._key = [];
     for (let action in this.actionsToBind) {
       if (this.actionsToBind[action].keys.includes(e.keyCode)) {
         this.disableAction(action);
@@ -115,9 +144,6 @@ class KeyBoardController extends PluginControllers {
   };
 
   isKeyPressed(keyCode) {
-    return window.event.keyCode === keyCode;
-  }
-  sayHi() {
-    console.log("hi");
+    return this._key.includes(keyCode);
   }
 }
