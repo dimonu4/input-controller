@@ -1,17 +1,47 @@
 "use strict";
+const settings = {
+  plugins: [
+    {
+      cls: KeyBoardController,
+      type: "keyboard",
+      keys: ["key"]
+    }
+  ]
+}
 class inputController {
-  keyboard;
+  controllersArray = [];
   focused;
-  controllers = {
-    keys: () => {
-      this.keyboard = new KeyBoardController(this.actionsToBind, this.target);
-    },
-  };
+  controllers;
+  plugins= {};
 
   constructor(actionsToBind, target) {
     this.actionsToBind = actionsToBind;
     this.target = target;
+    this.createControllersArray();
     this.chooseController();
+  }
+
+  createControllersArray() {
+    for (let action in this.actionsToBind) {
+      if (
+        this.controllersArray.includes(
+          Object.keys(this.actionsToBind[action])[0]
+        )
+      )
+        continue;
+      this.controllersArray.push(Object.keys(this.actionsToBind[action])[0]);
+    }
+
+    {
+      this.controllers = {
+        keys: () => {
+          this.controllersArray[0] = new KeyBoardController(
+            this.actionsToBind,
+            this.target
+          );
+        },
+      };
+    }
   }
 
   chooseController() {
@@ -29,23 +59,47 @@ class inputController {
   }
 
   attach(target, dontUnable) {
-    this.keyboard.attach(target, dontUnable);
+    if (this.controllersArray.length) {
+      this.controllersArray.forEach((controller) => {
+        controller.attach(target, !controller.enabled);
+      });
+    }
   }
 
   detach() {
-    this.keyboard.detach();
+    if (this.controllersArray.length) {
+      this.controllersArray.forEach((controller) => {
+        controller.detach();
+      });
+    }
   }
 
   enabled(bool) {
-    this.keyboard.enabled = bool;
-
-    this.keyboard.focused((isfocus) => {
-      this.keyBoardFocused = isfocus;
-    });
+    if (this.controllersArray.length) {
+      this.controllersArray.forEach((controller) => {
+        controller.enabled = bool;
+        controller.focused((isfocus) => {
+          this.controller = isfocus;
+        });
+      });
+    }
   }
 
   bindActions(actionsToBind) {
-    this.keyboard.actionsToBind = actionsToBind;
+    if (this.controllersArray.length) {
+
+      Object.entries(actionsToBind).forEach(([key, value])=>{
+        settings//
+        const pluginData;
+
+        if(!this.plugins[pluginData.type]){
+          this.plugins[pluginData.type] = new pluginData.cls();
+        }
+      })
+      this.controllersArray.forEach((controller) => {
+        controller.actionsToBind = actionsToBind;
+      });
+    }
   }
 }
 
@@ -58,6 +112,7 @@ class PluginControllers {
   }
 
   set enabled(value) {
+    // debugger;
     this._enabled = value;
     if (!this.enabled) {
       this.detach();
@@ -68,7 +123,12 @@ class PluginControllers {
     return this._enabled;
   }
 
+  // attach() {}
+
   enableAction(actionName) {
+    if (!actionName) {
+      return;
+    }
     if (this.isActionActive(actionName)) {
       return;
     }

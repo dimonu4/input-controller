@@ -25,7 +25,7 @@ let controller = new inputController(actionsA, document);
 
 let buttonAttach = document.querySelector(".btnAttach");
 buttonAttach.addEventListener("click", () => {
-  controller.attach(controller.target, !controller.keyboard.enabled);
+  controller.attach(controller.target);
 });
 let buttonDetach = document.querySelector(".btnDetach");
 buttonDetach.addEventListener("click", () => {
